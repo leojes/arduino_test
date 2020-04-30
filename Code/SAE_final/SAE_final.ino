@@ -28,7 +28,9 @@ String url="";
 String ip="\"data.sparkfun.com\"";        // sparkfun server ip or url
 String mobile="+ZZxxxxxxxxxx";//change ZZ with country code and xxxxxxxxxxx with phone number to sms
 String msg="";
-
+typedef struct gyro{
+  float roll,pitch;
+}gy;
 
 void setup() {
   // put your setup code here, to run once:
@@ -51,8 +53,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  gy pt;
   gps_data();
-  gyro_data();
+  pt=gyro_data();
   main_gsm();
 }
 void gps_data() {
@@ -135,7 +138,8 @@ static void smartDelay(unsigned long ms)
   } while (millis() - start < ms);
 }
 
-void gyro_data() {
+gy gyro_data() {
+  gy point;
   previousTime=currentTime;
   currentTime=millis();
   elapsedTime=(currentTime-previousTime)/1000;
@@ -172,6 +176,9 @@ void gyro_data() {
   //combination
   roll = 0.95*xf+0.05*accAngleX;
   pitch = 0.95*yf+0.05*accAngleY;
+  point.roll=roll;
+  point.pitch=pitch;
+  return point;
 }
 void calculate_IMU_error() {
   // We can call this funtion in the setup section to calculate the accelerometer and gyro data error. From here we will get the error values used in the above equations printed on the Serial Monitor.
@@ -324,3 +331,21 @@ void main_gsm() {
     delay(1000);
   }
 }
+
+
+//#include <stdio.h>
+//
+//typedef struct test {
+//    int a,b;
+//}s;
+//
+//
+//int main()
+//{
+//    printf("Hello World\n");
+//    s q;
+//    q.a=1;
+//    q.b=2;
+//    printf("%d",q.b);
+//    return 0;
+//}
